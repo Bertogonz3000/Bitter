@@ -6,22 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".ComposeActivity">
 
-    <EditText
-        android:inputType="textMultiLine"
-        android:id="@+id/tvNewBody"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="111dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:hint="Tweet here!" />
-
-    <Button
-        android:id="@+id/tweetButton"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#33E3FF"
-        android:layout_below="@id/tvNewBody"
-        android:text="Tweet"
-        android:onClick="onClick"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvNewBody"
+            android:text="140" />
+
+        <EditText
+            android:id="@+id/tvNewBody"
+            android:layout_width="match_parent"
+            android:layout_height="111dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:hint="Tweet here!"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/tweetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvNewBody"
+            android:background="#33E3FF"
+            android:onClick="onClick"
+            android:text="Tweet" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+
 </RelativeLayout
     >
