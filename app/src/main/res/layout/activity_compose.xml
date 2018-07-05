@@ -29,9 +29,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvNewBody"
-            android:background="#33E3FF"
+            android:background="@color/twitter_blue"
+            android:textColor="#FFFFFF"
             android:onClick="onClick"
-            android:text="Tweet" />
+            android:text="Tweet"
+            />
 
     </android.support.design.widget.TextInputLayout>
 

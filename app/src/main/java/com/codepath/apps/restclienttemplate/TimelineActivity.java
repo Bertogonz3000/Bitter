@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,8 @@ public class TimelineActivity extends AppCompatActivity {
 
     private final int REQUEST_CODE = 20;
 
+    private SwipeRefreshLayout swipeContainer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,57 @@ public class TimelineActivity extends AppCompatActivity {
         rvTweets.setAdapter(tweetAdapter);
 
         populateTimeline();
+
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchTimeLineAsynch(0);
+            }
+        });
+
+        // Scheme colors for animation
+        swipeContainer.setColorSchemeColors(
+                getResources().getColor(android.R.color.holo_blue_bright),
+                getResources().getColor(android.R.color.holo_green_light),
+                getResources().getColor(android.R.color.holo_orange_light),
+                getResources().getColor(android.R.color.holo_red_light));
+
+
     }
+
+    public void fetchTimeLineAsynch(int page){
+        //send the network request to fetch updated data
+
+        client.getHomeTimeline(new JsonHttpResponseHandler(){
+            public void onSuccess(int statusCode, Header[] headers, JSONArray json){
+                tweetAdapter.clear();
+
+                //for each entry, deserialize the JSON object
+                for (int i = 0; i < json.length(); i++){
+                    //convert each object to a tweet model
+                    //add that tweet model to our datasoruce
+                    //notify the adapter that we've added an item
+                    try {
+                        Tweet tweet = Tweet.fromJSON(json.getJSONObject(i));
+                        tweets.add(tweet);
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                }
+
+                tweetAdapter.addAll(tweets);
+
+                swipeContainer.setRefreshing(false);
+            }
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable){
+                Log.d("DEBUG", "Fetch timeline error: " + throwable.toString());
+
+            }
+        });
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu (Menu menu){
