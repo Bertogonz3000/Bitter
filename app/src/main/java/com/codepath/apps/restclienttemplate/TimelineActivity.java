@@ -70,13 +70,17 @@ public class TimelineActivity extends AppCompatActivity {
 
     //Getting the return from the composition activity
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        //use data parameter
-        Tweet tweet = (Tweet) Parcels.unwrap(data.getParcelableExtra("tweet"));
 
-        //Add the new tweet to the ArrayList
-        tweets.add(0, tweet);
-        tweetAdapter.notifyItemInserted(0);
-        rvTweets.scrollToPosition(0);
+        if (resultCode == RESULT_OK) {
+
+            //use data parameter
+            Tweet tweet = (Tweet) Parcels.unwrap(data.getParcelableExtra("tweet"));
+
+            //Add the new tweet to the ArrayList
+            tweets.add(0, tweet);
+            tweetAdapter.notifyItemInserted(0);
+            rvTweets.scrollToPosition(0);
+        }
     }
 
     private void populateTimeline() {
