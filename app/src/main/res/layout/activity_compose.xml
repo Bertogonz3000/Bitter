@@ -33,6 +33,7 @@
             android:textColor="#FFFFFF"
             android:onClick="onClick"
             android:text="Tweet"
+            android:layout_gravity="center_horizontal"
             />
 
     </android.support.design.widget.TextInputLayout>
