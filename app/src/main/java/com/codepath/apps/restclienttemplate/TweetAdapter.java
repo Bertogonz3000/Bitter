@@ -61,7 +61,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
     //get the data according to position
         Tweet tweet = mTweets.get(position);
 
-        final String USER_NAME = holder.tvUserName.getText().toString();
+        final String USER_NAME = tweet.user.screenName;
 
         // Populate the views according to this data
         holder.tvUserName.setText(tweet.user.screenName);
@@ -70,7 +70,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
         holder.tvBody.setText(tweet.body);
 
-        //TODO - add a listener for the layout
         holder.replyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
