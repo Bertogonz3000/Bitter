@@ -1,14 +1,20 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -16,6 +22,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.codepath.apps.restclienttemplate.models.TimeFormatter;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
+import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
 import java.util.List;
@@ -24,7 +31,9 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
     //Pass in tweets array into constructor
     private List<Tweet> mTweets;
-    Context context;
+    private Context context;
+
+    public int REQUEST_CODE = 20;
 
     public TweetAdapter(List<Tweet> tweets) { mTweets = tweets;
     }
@@ -52,12 +61,24 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
     //get the data according to position
         Tweet tweet = mTweets.get(position);
 
+        final String USER_NAME = holder.tvUserName.getText().toString();
+
         // Populate the views according to this data
         holder.tvUserName.setText(tweet.user.screenName);
 
         holder.tvUserName.setTypeface(null, Typeface.BOLD);
 
         holder.tvBody.setText(tweet.body);
+
+        //TODO - add a listener for the layout
+        holder.replyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, ReplyActivity.class);
+                i.putExtra("userName", Parcels.wrap(USER_NAME));
+                ((Activity) context).startActivityForResult(i, REQUEST_CODE);
+            }
+        });
 
         holder.tvName.setText(tweet.user.name);
 
@@ -83,6 +104,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         public TextView tvBody;
         public TextView tvName;
         public TextView tvTime;
+        public LinearLayoutCompat replyButton;
 
         public ViewHolder (View itemView){
             super(itemView);
@@ -94,7 +116,10 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
             tvBody = (TextView) itemView.findViewById(R.id.tvBody);
             tvName = (TextView) itemView.findViewById(R.id.tvName);
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
+            replyButton = (LinearLayoutCompat) itemView.findViewById(R.id.replyButton);
         }
+
+
     }
 
     //Methods involved with swipe refresher
