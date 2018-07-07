@@ -13,6 +13,7 @@ public class Tweet {
     public User user;
     public String createdAt;
     public String time;
+    public Boolean isLiked;
 
     // de-serialize the JSON
     public static Tweet fromJSON(JSONObject jsonObject) throws JSONException{
@@ -25,12 +26,22 @@ public class Tweet {
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
         tweet.time = TimeFormatter.getTimeDifference(tweet.createdAt);
+        tweet.isLiked = jsonObject.getBoolean("favorited");
 
         return tweet;
     }
 
+    public long getId() {
+        return uid;
+    }
 
+    public void like(){
+        isLiked = true;
+    }
 
+    public void unlike(){
+        isLiked = false;
+    }
 
     //Empty constructor for Parcler library
     public Tweet(){}

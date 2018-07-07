@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +22,25 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.codepath.apps.restclienttemplate.models.TimeFormatter;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.github.scribejava.apis.TwitterApi;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
     //Pass in tweets array into constructor
     private List<Tweet> mTweets;
     private Context context;
+    private TwitterClient client;
 
     public int REQUEST_CODE = 20;
 
@@ -44,6 +53,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
+
+        client = TwitterApplication.getRestClient(context);
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
@@ -59,9 +70,11 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
     @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
     //get the data according to position
-        Tweet tweet = mTweets.get(position);
+        final Tweet tweet = mTweets.get(position);
 
         final String USER_NAME = tweet.user.screenName;
+
+        final ImageView IV_LIKE = holder.ivLike;
 
         // Populate the views according to this data
         holder.tvUserName.setText(tweet.user.screenName);
@@ -77,6 +90,32 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
                 i.putExtra("userName", Parcels.wrap(USER_NAME));
                 ((Activity) context).startActivityForResult(i, REQUEST_CODE);
             }
+        });
+
+        holder.likeButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                client.likeTweet(tweet, new JsonHttpResponseHandler() {
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        Log.d("TweetAdapter", response.toString());
+
+                            IV_LIKE.setSelected(true);
+
+                            tweet.isLiked = true;
+
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        Log.d("TweetAdapter", errorResponse.toString());}
+
+                });
+            }
+
         });
 
         holder.tvName.setText(tweet.user.name);
@@ -98,12 +137,12 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
 
-        public ImageView ivProfileImage;
+        public ImageView ivProfileImage, ivLike;
         public TextView tvUserName;
         public TextView tvBody;
         public TextView tvName;
         public TextView tvTime;
-        public LinearLayoutCompat replyButton;
+        public LinearLayoutCompat replyButton, likeButton;
 
         public ViewHolder (View itemView){
             super(itemView);
@@ -116,6 +155,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
             tvName = (TextView) itemView.findViewById(R.id.tvName);
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
             replyButton = (LinearLayoutCompat) itemView.findViewById(R.id.replyButton);
+            likeButton = (LinearLayoutCompat) itemView.findViewById(R.id.likeButton);
+            ivLike = (ImageView) itemView.findViewById(R.id.ivLike);
         }
 
 

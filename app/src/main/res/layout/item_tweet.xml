@@ -85,6 +85,7 @@
     </android.support.v7.widget.LinearLayoutCompat>
 
         <android.support.v7.widget.LinearLayoutCompat
+            android:id="@+id/likeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/replyButton"
@@ -93,9 +94,10 @@
             android:layout_toEndOf="@id/replyButton">
 
             <ImageView
+                android:id="@+id/ivLike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_vector_heart_stroke"
+                android:src="@drawable/vector_heart_state_selected"
                 android:layout_gravity="center"/>
 
             <TextView
