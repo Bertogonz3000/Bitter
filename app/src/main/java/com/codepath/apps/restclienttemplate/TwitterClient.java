@@ -1,6 +1,8 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.nfc.Tag;
+import android.util.Log;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.oauth.OAuthBaseClient;
@@ -64,25 +66,25 @@ public class TwitterClient extends OAuthBaseClient {
 	public void likeTweet(Tweet tweet, JsonHttpResponseHandler handler){
 	    //tweetId
 	    long tweetId = tweet.getId();
-	    //Like status
-        Boolean liked;
-
-        if (tweet.isLiked){
-            liked = false;
-        } else {
-            liked = true;
-        }
 
         //get the endpoint URL
 		String apiUrl = getApiUrl(String.format("favorites/create.json?id=%s", tweetId));
 		//Get params
         RequestParams params = new RequestParams();
-        params.put("favorited", liked);
+        params.put("favorited", true);
         client.post(apiUrl, params, handler);
 
 	}
 
+    public void unlikeTweet(Tweet tweet, JsonHttpResponseHandler handler){
+	    long tweetId = tweet.getId();
+        Log.e("Main Activity", "CHECK");
+	    String apiUrl = getApiUrl(String.format("favorites/destroy.json?id=%s", tweetId));
 
+	    RequestParams params = new RequestParams();
+	    params.put("favorited", false);
+	    client.post(apiUrl, params, handler);
+    }
 
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
 	 * 	  i.e getApiUrl("statuses/home_timeline.json");

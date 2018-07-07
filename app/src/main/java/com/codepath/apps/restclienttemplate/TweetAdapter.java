@@ -96,24 +96,46 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
             @Override
             public void onClick(View v) {
-                client.likeTweet(tweet, new JsonHttpResponseHandler() {
 
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        Log.d("TweetAdapter", response.toString());
+                if (!tweet.isLiked) {
+                    client.likeTweet(tweet, new JsonHttpResponseHandler() {
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            Log.d("TweetAdapter", response.toString());
 
                             IV_LIKE.setSelected(true);
 
                             tweet.isLiked = true;
 
+                        }
 
-                    }
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            Log.d("TweetAdapter", errorResponse.toString());
+                        }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        Log.d("TweetAdapter", errorResponse.toString());}
+                    });
+                } else {
+                    client.unlikeTweet(tweet, new JsonHttpResponseHandler(){
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            Log.d("TweetAdapter", response.toString());
 
-                });
+                            IV_LIKE.setSelected(false);
+
+                            tweet.isLiked = false;
+
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            Log.d("TweetAdapter", errorResponse.toString());
+                        }
+                    });
+                }
+
+
             }
 
         });
